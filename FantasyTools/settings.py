@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'stats.apps.StatsConfig',
+    'scraper.apps.ScraperConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
