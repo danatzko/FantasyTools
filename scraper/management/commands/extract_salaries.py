@@ -20,8 +20,8 @@ class Command(BaseCommand):
                 # Create all the objects that don't exist
 
                 player,created3 = Player.objects.get_or_create(name=row['name'])
-                player.points = player.points + row['points']
-                player.games = players.games + 1
+                player.points += float(row['points'])
+                player.games += 1
                 player.avg_points_game = player.points / player.games
                 # Player averages should really be run as a second job.  Jupyter Notebook for demo purposes?
                 # player.avg_salary won't be accurate until all of the game stats are complete
