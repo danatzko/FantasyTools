@@ -14,10 +14,13 @@ class Command(BaseCommand):
         parser.add_argument('threshold', nargs='+', type=int)
 
     def handle(self, *args, **options):
+        # options
         year=options['year']
         week=options['week']
         threshold=options['threshold']
+        # Create a new interpreter
         gw=execnet.makegateway("popen//python=python2.7")
+        # Multiline varaible string which is executed as a python2.7 script in a separate shell
         cmd = '''
             import os
             my_file = os.path.join(os.path.expanduser("~"), "venv/nflgame/nflgame/bin/activate_this.py")
@@ -75,9 +78,15 @@ class Command(BaseCommand):
             channel.send(repr(response))
         ''' % {'year':year[0],'week':week[0],'threshold':threshold[0]}
         
+        # Execture the string
         channel=gw.remote_exec(cmd)
 
+        # Get the response
         players = channel.receive()
         
+        # For now, just print
+        # TODO - After stats.models are available, store the DB with results 
         self.stdout.write(players)
+
+        # TODO - error handling, defaults, and post processing
         
