@@ -1,0 +1,66 @@
+DRAFTDRAFTDRAFT
+
+Author: Me
+Date Started: 12/1
+
+Analysis Plan
+
+Problem:  Predict the players who will score the most points.  Of the top-scoring points, use the salaries of each player to maximize the points scored of a single entry.
+
+Approach: 
+ - Baseline scoring statistics
+ - Standard deviation and how easily influenced?
+ - Create a game model that summarizes defense and offense production with the purpose of identifying who performed above, below or within the standard deviation.
+	- Each players, % of snaps played (game), % of snaps played (season)	
+ - X-check penalties for/against both teams of each game and adjust averages/totals 
+	Some yards are earned, and some yards aren’t
+ - X-Check weather for each game and adjust averages/totals 
+
+
+
+Questions:
+ - Head Coach, Offensive/Defensive coordinator for each game available?
+ - Define Standard deviation. 
+	Average including all games and then 
+
+Unknowable:
+ - Injuries
+ - Coaching/Player changes
+
+
+Objective:
+ - Create a data extraction tool that queries the nflgame API for summarized and specific stats.
+ - Create a Django App using the Data Access Layer (DAL) paradigm to properly model 
+
+Functional Requirements:
+ - Upload CSV for parsing and predictions
+ - Update at scheduled intervals
+ - Player Search w/ Metadata
+
+Data 
+Normalization 
+- Identify missing ETL functionality
+	- Reusable player search
+	- Reusable player from games 
+Pipeline Managment
+- Use Luigi to setup ETL tasks and monitor
+	- update for schedule and player 
+	- summaries and totals
+	- publish predictions
+
+Machine Learning
+ - Classify - establish a set of labels for a finite set of objects
+ - Regression - predict a set of labels for an infinite set of objects
+	contiguous target variable
+ - Train (regression) - apply model to 
+ - Test
+ - Fit
+ - Predict
+
+
+PROBLEMS:
+ - How to run nflgame (python 2.7) and Django (python 3.6) in the same app
+ -  
+
+
+DRAFTDRAFTDRAFT
