@@ -1,6 +1,15 @@
 from django.db import models
 
-# Create your models here.
+'''
+    FantastyTools.models
+
+    From the game_stats CSV file, extrapolate a model indicative of performance
+    over time given several scenarios:
+
+    1.  Home vs Away
+    2.  Point Distribution by Team (offense and defense)
+    3.  Influencers and Magnifiers 
+'''
 
 class GameStats(models.Model):
     
@@ -33,13 +42,20 @@ class Player(models.Model):
     name = models.CharField(max_length=50)
     pos = models.CharField(max_length=5, default=None)
     games = models.IntegerField(default=0)
-    plays = models.IntegerField(default=0)
+    games_away = models.IntegerField(default=0)
+    games_home = models.IntegerField(default=0)
     points = models.IntegerField(default=0)
+    points_home = models.IntegerField(default=0)
+    points_away = models.IntegerField(default=0)
+    salary_total = models.IntegerField(default=0)
+    salary_total_home = models.IntegerField(default=0)
+    salary_total_away = models.IntegerField(default=0)
     avg_salary = models.IntegerField(default=0)
+    avg_salary_home = models.IntegerField(default=0)
+    avg_salary_away = models.IntegerField(default=0)
     avg_points_game = models.IntegerField(default=0)
     avg_points_away = models.IntegerField(default=0)
     avg_points_home = models.IntegerField(default=0)
-    deviation = models.IntegerField(default=0)
 
 
 class Team(models.Model):
@@ -49,7 +65,4 @@ class Team(models.Model):
     o_points_away = models.IntegerField(default=0)
     o_points_home = models.IntegerField(default=0)
     d_points_away = models.IntegerField(default=0)
-    d_points_home = models.IntegerField(default=0)
-    a_deviation = models.IntegerField(default=0)
-    h_deviation = models.IntegerField(default=0)
-    
+    d_points_home = models.IntegerField(default=0)    

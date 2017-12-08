@@ -16,47 +16,19 @@ class Command(BaseCommand):
             for row in my_reader:
                 ## Normalize incoming Data
                 
-                # Salary has an odd format.  Needs to be cast as a float
-                salary = float(0.0) if row['salary'] == '' else float(row['salary'])
-                points = float(row['points'])
-                points_for = points_against = points
+                my_objects = self.setup_objects(row)
                 
                 ## Setup object references
 
                 # Each "stat" row represents a score for a player and a team.  
                 # team  [away || home] [points_for]
                 # oppt  [points_against] (future)
-                if row['h_a'] == 'h':
-                    home,home_created = Team.objects.get_or_create(name=row['team'])
-                    away,away_created = Team.objects.get_or_create(name=row['oppt'])
-                    team = home
-                    if row['pos'] == 'Def':
-                        home.d_points += points_for
-                        home.d_points_home += points_for
-                    else:
-                        home.o_points += points_for
-                        home.o_points_home += points_for
-                else:
-                    home,home_created = Team.objects.get_or_create(name=row['oppt'])
-                    away,away_created = Team.objects.get_or_create(name=row['team'])
-                    team = away
-                    if row['pos'] == 'Def':
-                        away.d_points += points_for
-                        away.d_points_away += points_for
-                    else:
-                        away.o_points += points_for
-                        away.o_points_away += points_for
-                
-                player,player_created = Player.objects.get_or_create(name=row['name'],pos=row['pos'],team=row['team'])
-                player.points += points
-                player.games += 1
-                player.avg_points_game = player.points / player.games
                 
                 stat = GameStats(
-                    Player_id=player.id,
-                    Home=home,
-                    Away=away,
-                    salary=salary,
+                    Player=my_objects['player'],
+                    Home=my_objects['home'],
+                    Away=my_objects['away'],
+                    salary=my_objects['salary'],
                     pos=row['pos'],
                     points=row['points'],
                     week=row['week'],
@@ -66,12 +38,63 @@ class Command(BaseCommand):
                 # and print the offending row.
                 try:
                     stat.save()
-                    player.save()
-                    home.save()
-                    away.save()
-                    #self.stdout.write(player.name)
-                    #self.stdout.write(home.name)
-                    #self.stdout.write(away.name)
                 except ValueError:
                     print(row)
                     break
+    def setup_objects(self,row):
+         # Salary has an odd format.  Needs to be cast as a float
+        salary = float(0.0) if row['salary'] == '' else float(row['salary'])
+        points = float(row['points'])
+        player,player_created = Player.objects.get_or_create(name=row['name'],pos=row['pos'],team=row['team'])
+        player.points += points
+        player.games += 1
+        player.avg_points_game = player.points / player.games
+        player.salary_total += salary
+        player.avg_salary = player.salary_total / player.games
+
+        if row['h_a'] == 'h':
+            home,home_created = Team.objects.get_or_create(name=row['team'])
+            away,away_created = Team.objects.get_or_create(name=row['oppt'])
+            player.games_home += 1
+            player.points_home += points
+            player.avg_points_home = player.points_home / player.games_home
+            
+            player.salary_total_home += salary
+            player.avg_salary_home = player.salary_total_home / player.games_home
+            if row['pos'] == 'Def':
+                home.d_points += points
+                home.d_points_home += points
+            else:
+                home.o_points += points
+                home.o_points_home += points
+        else:
+            home,home_created = Team.objects.get_or_create(name=row['oppt'])
+            away,away_created = Team.objects.get_or_create(name=row['team'])
+            player.games_away += 1
+            player.points_away += points
+            player.avg_points_away = player.points_away / player.games_away
+            
+            player.salary_total_away += salary
+            player.avg_salary_away = player.salary_total_away / player.games_away
+            if row['pos'] == 'Def':
+                away.d_points += points
+                away.d_points_away += points
+            else:
+                away.o_points += points
+                away.o_points_away += points
+        try:
+            player.save()
+            home.save()
+            away.save()
+        except ValueError:
+            print(row)
+                
+        my_objects = {}
+        my_objects['home'] = home
+        my_objects['away'] = away
+        my_objects['player'] = player
+        my_objects['salary'] = salary
+        return my_objects
+
+        
+        
