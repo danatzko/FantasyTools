@@ -9,7 +9,6 @@ class GameStats(models.Model):
         null=False,
         default=None,
     )
-
     Home = models.ForeignKey('Team',
         on_delete=models.DO_NOTHING,
         null=False,
@@ -28,7 +27,11 @@ class GameStats(models.Model):
     points = models.FloatField(default=0)
 
 class Player(models.Model):
-    name = models.CharField(max_length=50, unique=True)
+    class Meta:
+        unique_together = ('team','name','pos')    
+    team = models.CharField(max_length=5, default=None)
+    name = models.CharField(max_length=50)
+    pos = models.CharField(max_length=5, default=None)
     games = models.IntegerField(default=0)
     plays = models.IntegerField(default=0)
     points = models.IntegerField(default=0)
@@ -38,8 +41,9 @@ class Player(models.Model):
     avg_points_home = models.IntegerField(default=0)
     deviation = models.IntegerField(default=0)
 
+
 class Team(models.Model):
-    name = models.CharField(max_length=5, unique=True)
+    name = models.CharField(max_length=5)
     o_points = models.IntegerField(default=0)
     d_points = models.IntegerField(default=0)
     o_points_away = models.IntegerField(default=0)
